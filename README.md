@@ -11,3 +11,5 @@ Use Case#3: Multi-cluster service mesh with Google hipster sample application (1
 
 Use Case #4: Application resiliency and global service failover of Google hipster application (from GKE edge cloud failover to on-prem Kubernetes when edge cloud unavailable)
 
+## Use Case #1
+<img src=https://github.com/fbchan/aspen-mesh-multi-cluster/blob/master/images/Usecase_01.png alt="UseCase#1" width=1000>
