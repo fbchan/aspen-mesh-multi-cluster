@@ -1,0 +1,99 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: adservice-entry
+spec:
+  addresses:
+  - 240.0.0.31
+  endpoints:
+  - address: 203.134.121.81
+    ports:
+      grpc: 15443
+  hosts:
+  - adservice.hip2.global
+  location: MESH_INTERNAL
+  ports:
+  - name: grpc
+    number: 9555
+    protocol: GRPC
+  resolution: DNS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: checkoutservice-entry
+spec:
+  addresses:
+  - 240.0.0.32
+  endpoints:
+  - address: 203.134.121.81
+    ports:
+      grpc: 15443
+  hosts:
+  - checkoutservice.hip2.global
+  location: MESH_INTERNAL
+  ports:
+  - name: grpc
+    number: 5050
+    protocol: GRPC
+  resolution: DNS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: currencyservice-entry
+spec:
+  addresses:
+  - 240.0.0.33
+  endpoints:
+  - address: 203.134.121.81
+    ports:
+      grpc: 15443
+  hosts:
+  - currencyservice.hip2.global
+  location: MESH_INTERNAL
+  ports:
+  - name: grpc
+    number: 7000
+    protocol: GRPC
+  resolution: DNS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: shippingservice-entry
+spec:
+  addresses:
+  - 240.0.0.34
+  endpoints:
+  - address: 203.134.121.81
+    ports:
+      grpc: 15443
+  hosts:
+  - shippingservice.hip2.global
+  location: MESH_INTERNAL
+  ports:
+  - name: grpc
+    number: 50051
+    protocol: GRPC
+  resolution: DNS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: cartservice-entry
+spec:
+  addresses:
+  - 240.0.0.35
+  endpoints:
+  - address: 203.134.121.91
+    ports:
+      grpc: 15443
+  hosts:
+  - cartservice.hip3.global
+  location: MESH_INTERNAL
+  ports:
+  - name: grpc
+    number: 7070
+    protocol: GRPC
+  resolution: DNS

@@ -1,0 +1,23 @@
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: aspen-mesh-controlplane-cis
+      namespace: istio-system
+      annotations:
+        # Platform-specific annotations
+        # We recommend enabling TLS
+      labels:
+        app: aspen-mesh-controlplane
+        #app: aspen-mesh-dashboard
+        cis.f5.com/as3-tenant: AMCTRL2
+        cis.f5.com/as3-app: amctrl2_app
+        cis.f5.com/as3-pool: amctrl2_pool
+    spec:
+      ports:
+      - name: http
+        port: 19001
+        protocol: TCP
+        targetPort: http
+      selector:
+        app: aspen-mesh-controlplane
+        #app: aspen-mesh-dashboard

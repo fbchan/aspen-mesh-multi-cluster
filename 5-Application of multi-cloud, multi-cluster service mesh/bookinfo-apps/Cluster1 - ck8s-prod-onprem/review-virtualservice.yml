@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: reviews
+spec:
+  hosts:
+    - reviews.istio-apps.svc.cluster.local
+  http:
+  - match:
+    - headers:
+        end-user:
+          exact: jason
+    route:
+    - destination:
+        host: reviews.istio-apps.global
+        subset: v2
+      weight: 50
+    - destination:
+        host: reviews.istio-apps.global
+        subset: v3
+      weight: 50
+  - route:
+    - destination:
+        host: reviews.istio-apps.svc.cluster.local
+        subset: v1

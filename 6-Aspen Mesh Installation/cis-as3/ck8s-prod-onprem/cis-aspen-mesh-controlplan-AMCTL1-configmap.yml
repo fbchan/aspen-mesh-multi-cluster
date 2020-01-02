@@ -1,0 +1,77 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: f5-as3-amctrl1
+  namespace: istio-system
+  labels:
+    f5type: virtual-server
+    as3: "true"
+data:
+  template: |
+    {
+        "class": "AS3",
+        "declaration": {
+            "class": "ADC",
+            "schemaVersion": "3.10.0",
+            "id": "urn:uuid:33045210-3ab8-4636-9b2a-c98d22ab915d",
+            "label": "http",
+            "remark": "Simple HTTP application with RR pool",
+            "Common": {
+               "class": "Tenant",
+               "Shared": {
+                 "class": "Application",
+                 "template": "shared",
+                 "XFF_HTTP_Profile": {
+                 "class": "HTTP_Profile",
+                 "xForwardedFor": true
+                 }
+               }
+            },
+            "AMCTRL1": {
+                "class": "Tenant",
+                "amctrl1_app": {
+                    "class": "Application",
+                    "template": "generic",
+                    "amctrl1_ingress": {
+                        "class": "Service_HTTPS",
+                        "virtualAddresses": [
+                            "10.1.1.71"
+                        ],
+                        "virtualPort": 443,
+                        "redirect80": false,
+                        "remark":"ingress: Aspen Mesh Dashboard ingress",
+                        "pool": "amctrl1_pool",
+                        "serverTLS": "amctrl1_webtls_local",
+                        "profileHTTP":{"use": "/Common/Shared/XFF_HTTP_Profile"}
+                    },
+                    "amctrl1_pool": {
+                        "class": "Pool",
+                        "monitors": [
+                            "http"
+                        ],
+                        "members": [
+                            {
+                                "servicePort": 19001,
+                                "shareNodes": true,
+                                "serverAddresses": []
+                            }
+                        ]
+                    },
+                    "amctrl1_webtls_local": {
+                      "class": "TLS_Server",
+                      "label": "Certificate",
+                      "certificates": [
+                        {
+                          "certificate": "tlsserver_local_cert"
+                        }
+                      ]
+                    },
+                    "tlsserver_local_cert": {
+                      "class": "Certificate",
+                      "certificate": {"bigip":"/Common/foobz.com.au_4-cert"},
+                      "privateKey": {"bigip":"/Common/foobz.com.au_4-key"}
+                    }
+                }
+            }
+        }
+    }

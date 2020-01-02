@@ -1,0 +1,97 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: f5-as3-istioigw3
+  namespace: istio-system
+  labels:
+    f5type: virtual-server
+    as3: "true"
+data:
+  template: |
+    {
+        "class": "AS3",
+        "declaration": {
+            "class": "ADC",
+            "schemaVersion": "3.10.0",
+            "id": "urn:uuid:33045210-3ab8-4636-9b2a-c98d22ab915d",
+            "label": "http",
+            "remark": "Simple HTTP application with RR pool",
+            "Common": {
+               "class": "Tenant",
+               "Shared": {
+                 "class": "Application",
+                 "template": "shared",
+                 "XFF_HTTP_Profile": {
+                 "class": "HTTP_Profile",
+                 "xForwardedFor": true
+                 },
+                 "serviceAddress": {
+                    "class":"Service_Address",
+                    "virtualAddress":"10.12.0.20"
+                 }
+               }
+            },
+            "ISTIOIGW3": {
+                "class": "Tenant",
+                "igw3_http2_app": {
+                    "class": "Application",
+                    "template": "generic",
+                    "igw3_http2_ingress": {
+                        "class": "Service_HTTP",
+                        "virtualAddresses": [
+                            { "use": "/Common/Shared/serviceAddress" }
+                        ],
+                        "virtualPort": 80,
+                        "remark":"ingress: http2 istio ingress gateway",
+                        "pool": "igw3_http2_pool",
+                        "profileHTTP":{"use": "/Common/Shared/XFF_HTTP_Profile"},
+                        "securityLogProfiles": [
+                        {
+                            "bigip": "/Common/Log illegal requests"
+                        }
+                        ]
+                    },
+                    "igw3_http2_pool": {
+                        "class": "Pool",
+                        "monitors": [
+                            "http"
+                        ],
+                        "members": [
+                            {
+                                "servicePort": 80,
+                                "shareNodes": true,
+                                "serverAddresses": []
+                            }
+                        ]
+                    }
+                },
+                "igw3_tls_app": {
+                    "class": "Application",
+                    "template": "generic",
+                    "igw3_tls_ingress": {
+                        "class": "Service_TCP",
+                        "virtualAddresses": [
+                            { "use": "/Common/Shared/serviceAddress" }
+                        ],
+                        "virtualPort": 15443,
+                        "remark":"ingress: tls istio ingress gateway",
+                        "pool": "igw3_tls_pool",
+                        "profileHTTP":{"use": "/Common/Shared/XFF_HTTP_Profile"}
+                    },
+                    "igw3_tls_pool": {
+                        "class": "Pool",
+                        "monitors": [
+                             "tcp-half-open"
+                        ],
+                        "members": [
+                            {
+                                "servicePort": 15443,
+                                "shareNodes": true,
+                                "serverAddresses": []
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    }

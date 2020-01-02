@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cis-istio-ingressgateway-http2
+  namespace: istio-system
+  labels:
+    app: istio-ingressgateway
+    cis.f5.com/as3-tenant: ISTIOIGW1
+    cis.f5.com/as3-app: igw1_http2_app
+    cis.f5.com/as3-pool: igw1_http2_pool
+spec:
+  ports:
+  - name: http2
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: istio-ingressgateway
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cis-istio-ingressgateway-tls
+  namespace: istio-system
+  labels:
+    app: istio-ingressgateway
+    cis.f5.com/as3-tenant: ISTIOIGW1
+    cis.f5.com/as3-app: igw1_tls_app
+    cis.f5.com/as3-pool: igw1_tls_pool
+spec:
+  ports:
+  - name: tls
+    port: 15443
+    protocol: TCP
+    targetPort: 15443
+  selector:
+    app: istio-ingressgateway

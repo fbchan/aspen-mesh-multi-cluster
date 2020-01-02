@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nettools-deploy
+  labels:
+    app: nettools
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nettools
+  template:
+    metadata:
+      labels:
+        app: nettools
+    spec:
+      containers:
+      - name: nettools
+        image: praqma/network-multitool
+        ports:
+        - containerPort: 80
+        

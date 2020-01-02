@@ -1,0 +1,100 @@
+global:
+  controlPlaneSecurityEnabled: true
+  mtls:
+    enabled: true
+
+  imagePullSecrets:
+  - aspen-mesh-pull-secret
+
+  proxy:
+    accessLogFile: "/dev/stdout"
+
+  outboundTrafficPolicy:
+    mode: REGISTRY_ONLY
+
+  tracer:
+    zipkin:
+      # address is the Host:Port for reporting trace data in zipkin format. If
+      # not specified, will default to zipkin service (port 9411) in the same
+      # namespace as the other istio components.
+      address: ""
+
+  ##### MULTICLUSTER #######
+  podDNSSearchNamespaces:
+  - global
+  - "{{ valueOrDefault .DeploymentMeta.Namespace \"default\" }}.global"
+
+  multiCluster:
+    enabled: true
+  #########################
+
+pilot:
+  # Aspen Mesh has decided to disable this experimental feature until
+  # both outbound and inbound protocol sniffing is merged and is
+  # stable
+  enableProtocolSniffingForOutbound: false
+
+aspen-mesh-controlplane:
+  enabled: true
+  image: quay.io/aspenmesh/releases:controlplane-1.3.6-am1
+
+  imagePullSecrets:
+  - aspenmesh-kubernetes-pull-secret
+
+  replicaCount: 2
+
+  clusterId: ck8s-PROD-onprem
+
+  userAuth:
+    type: none
+    #jwt:
+      # jwks must provide a valid JWKs endpoint.
+      # jwks:
+      # redirectUrl must provide an unauthenticated redirect URL.
+      #redirectUrl:
+      # claims can be added here to require claims be present in the JWT
+      # (e.g.: `claims: aud=aspenmesh:io,role=k8s:admin`).
+
+  # prometheusUrl must provide a valid Prometheus URL.
+  prometheusUrl: http://prometheus.monitoring.svc.cluster.local:9090
+
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "128Mi"
+      cpu: "100m"
+
+aspen-mesh-dashboard:
+  enabled: true
+  image: quay.io/aspenmesh/releases:dashboard-1.3.6-am1
+  replicaCount: 2
+
+traffic-claim-enforcer:
+  enabled: true
+  image: quay.io/aspenmesh/releases:traffic-claim-enforcer-1.3.6-am1
+  resources: {}
+
+prometheus:
+  enabled: true
+
+
+# MULTICLUSTER #######
+
+# Multicluster with gateways requires a root CA
+# Cluster local CAs are bootstrapped with the root CA.
+security:
+  selfSigned: false
+
+# Provides dns resolution for service entries of form
+# name.namespace.global
+istiocoredns:
+  enabled: true
+
+gateways:
+  istio-egressgateway:
+    enabled: true
+    env:
+      # Needed to route traffic via egress gateway if desired.
+      ISTIO_META_REQUESTED_NETWORK_VIEW: "external"
