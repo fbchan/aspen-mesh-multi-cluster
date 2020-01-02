@@ -13,3 +13,9 @@ Use Case #4: Application resiliency and global service failover of Google hipste
 
 ## Use Case #1
 <img src=https://github.com/fbchan/aspen-mesh-multi-cluster/blob/master/images/Usecase_01.png alt="UseCase#1" width=1000>
+
+## Use Case #2
+<img src=https://github.com/fbchan/aspen-mesh-multi-cluster/blob/master/images/Usecase_02_1.png alt="UseCase#2-1" width=1000>
+<img src=https://github.com/fbchan/aspen-mesh-multi-cluster/blob/master/images/Usecase_02_2.png alt="UseCase#2-2" width=1000>
+<img src=https://github.com/fbchan/aspen-mesh-multi-cluster/blob/master/images/Usecase_02_3.png alt="UseCase#2-3" width=1000>
+
